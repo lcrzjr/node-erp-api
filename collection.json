@@ -1,0 +1,90 @@
+{
+  "info": {
+    "name": "Node ERP API",
+    "description": "Collection for testing the Node ERP API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. Create Customer",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"document\": \"12345678900\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:3333/customers",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3333",
+          "path": [
+            "customers"
+          ]
+        }
+      }
+    },
+    {
+      "name": "2. Create Product",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Notebook Pro\",\n  \"price\": 4500.00,\n  \"stockQuantity\": 10\n}"
+        },
+        "url": {
+          "raw": "http://localhost:3333/products",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3333",
+          "path": [
+            "products"
+          ]
+        }
+      }
+    },
+    {
+      "name": "3. Create Order (Transaction)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"customerId\": \"SUBSTITUIR_PELO_ID_DO_CLIENTE_AQUI\",\n  \"items\": [\n    {\n      \"productId\": \"SUBSTITUIR_PELO_ID_DO_PRODUTO_AQUI\",\n      \"quantity\": 2\n    }\n  ]\n}"
+        },
+        "url": {
+          "raw": "http://localhost:3333/orders",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3333",
+          "path": [
+            "orders"
+          ]
+        }
+      }
+    }
+  ]
+}
