@@ -67,3 +67,12 @@ src/
  ├── repositories/     # Data access interfaces and Prisma implementations
  └── usecases/         # Core business logic and rules
 ```
+
+## 🛣️ API Endpoints (Examples)
+
+Below are some of the main routes available in the system:
+
+- `POST /orders` - Creates a new sales order and deducts stock inside an ACID transaction.
+- `GET /products` - Lists all available products.
+- `POST /customers` - Registers a new customer.
+- `GET /orders/:id` - Retrieves details of a specific order.
