@@ -68,11 +68,21 @@ src/
  └── usecases/         # Core business logic and rules
 ```
 
-## 🛣️ API Endpoints (Examples)
+## 🛣️ API Endpoints
 
-Below are some of the main routes available in the system:
+Below are the main routes available in the system:
 
-- `POST /orders` - Creates a new sales order and deducts stock inside an ACID transaction.
-- `GET /products` - Lists all available products.
+### Customers
 - `POST /customers` - Registers a new customer.
-- `GET /orders/:id` - Retrieves details of a specific order.
+- `GET /customers` - Lists all customers (paginated).
+- `GET /customers/:id` - Retrieves details of a specific customer.
+
+### Products
+- `POST /products` - Registers a new product.
+- `GET /products` - Lists all available products (paginated).
+- `GET /products/:id` - Retrieves details of a specific product.
+
+### Orders
+- `POST /orders` - Creates a new sales order and deduct stock inside an ACID transaction.
+- `GET /orders` - Lists all orders (paginated).
+- `GET /orders/:id` - Retrieves details of a specific order (includes relational data like customer and items).
