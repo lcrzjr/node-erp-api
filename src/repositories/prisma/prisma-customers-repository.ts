@@ -27,4 +27,21 @@ export class PrismaCustomersRepository implements CustomersRepository {
     });
     return customer;
   }
+
+  async findById(id: string) {
+    const customer = await prisma.customer.findUnique({
+      where: {
+        id,
+      },
+    });
+    return customer;
+  }
+
+  async findMany(page: number) {
+    const customers = await prisma.customer.findMany({
+      take: 20,
+      skip: (page - 1) * 20,
+    });
+    return customers;
+  }
 }

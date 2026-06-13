@@ -7,4 +7,6 @@ export interface OrderItemInput {
 
 export interface OrdersRepository {
   createWithTransaction(customerId: string, items: OrderItemInput[]): Promise<Order>;
+  findById(id: string): Promise<Order | null>;
+  findMany(page: number): Promise<Order[]>;
 }

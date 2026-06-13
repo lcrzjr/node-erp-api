@@ -60,4 +60,29 @@ export class PrismaOrdersRepository implements OrdersRepository {
       return order;
     });
   }
+
+  async findById(id: string) {
+    const order = await prisma.order.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        customer: true,
+        items: {
+          include: {
+            product: true,
+          },
+        },
+      },
+    });
+    return order;
+  }
+
+  async findMany(page: number) {
+    const orders = await prisma.order.findMany({
+      take: 20,
+      skip: (page - 1) * 20,
+    });
+    return orders;
+  }
 }
