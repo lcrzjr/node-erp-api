@@ -1,11 +1,11 @@
-import { app } from '../../../app';
-import { prisma } from '../../../lib/prisma';
 import { PostgreSqlContainer, StartedPostgreSqlContainer } from '@testcontainers/postgresql';
 import { execSync } from 'child_process';
 import { expect, describe, it, beforeAll, afterAll } from 'vitest';
 
 describe('Create Order (E2E)', () => {
   let container: StartedPostgreSqlContainer;
+  let app: typeof import('../../../app.js').app;
+  let prisma: typeof import('../../../lib/prisma.js').prisma;
 
   beforeAll(async () => {
     container = await new PostgreSqlContainer('postgres:15-alpine').start();
@@ -17,6 +17,12 @@ describe('Create Order (E2E)', () => {
         DATABASE_URL: process.env.DATABASE_URL,
       },
     });
+
+    const appModule = await import('../../../app.js');
+    const prismaModule = await import('../../../lib/prisma.js');
+
+    app = appModule.app;
+    prisma = prismaModule.prisma;
 
     await app.ready();
   }, 60000);

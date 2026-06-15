@@ -12,6 +12,9 @@ jobs:
   build-and-test:
     name: Build & Test
     runs-on: ubuntu-latest
+    env:
+      NODE_ENV: test
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/erp_api?schema=public
 
     steps:
       - name: Checkout repository
