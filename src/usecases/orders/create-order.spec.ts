@@ -45,7 +45,7 @@ describe('Create Order Use Case', () => {
 
     expect(order.id).toEqual(expect.any(String));
     expect(order.totalAmount).toEqual(new Prisma.Decimal(21));
-    expect(productsRepository.items[0].stockQuantity).toEqual(8);
+    expect(productsRepository.items[0]?.stockQuantity).toEqual(8);
   });
 
   it('should aggregate duplicate items correctly', async () => {
@@ -70,7 +70,7 @@ describe('Create Order Use Case', () => {
     });
 
     expect(order.totalAmount).toEqual(new Prisma.Decimal(50));
-    expect(productsRepository.items[0].stockQuantity).toEqual(5);
+    expect(productsRepository.items[0]?.stockQuantity).toEqual(5);
   });
 
   it('should not be able to create an order with empty items', async () => {
@@ -163,7 +163,7 @@ describe('Create Order Use Case', () => {
     ).rejects.toBeInstanceOf(InsufficientStockError);
 
     // Rollback validation: Product 1 should NOT be deducted
-    expect(productsRepository.items[0].stockQuantity).toEqual(10);
-    expect(productsRepository.items[1].stockQuantity).toEqual(2);
+    expect(productsRepository.items[0]?.stockQuantity).toEqual(10);
+    expect(productsRepository.items[1]?.stockQuantity).toEqual(2);
   });
 });

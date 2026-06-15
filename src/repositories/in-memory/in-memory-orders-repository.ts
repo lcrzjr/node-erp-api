@@ -45,6 +45,10 @@ export class InMemoryOrdersRepository implements OrdersRepository {
       );
       const product = this.productsRepository.items[productIndex];
 
+      if (!product) {
+        throw new ResourceNotFoundError(`Product with ID ${item.productId} not found.`);
+      }
+
       if (product.stockQuantity < item.quantity) {
         throw new InsufficientStockError(`Insufficient stock for product ${item.name}.`);
       }
@@ -55,7 +59,11 @@ export class InMemoryOrdersRepository implements OrdersRepository {
       const productIndex = this.productsRepository.items.findIndex(
         (p) => p.id === item.productId
       );
-      this.productsRepository.items[productIndex].stockQuantity -= item.quantity;
+      const product = this.productsRepository.items[productIndex];
+      
+      if (product) {
+        product.stockQuantity -= item.quantity;
+      }
 
       const itemTotal = item.unitPrice.mul(item.quantity);
       totalAmount = totalAmount.add(itemTotal);

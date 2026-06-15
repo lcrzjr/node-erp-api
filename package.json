@@ -9,7 +9,8 @@
     "start": "node build/server.js",
     "test": "vitest run --exclude **/*.e2e-spec.ts",
     "test:e2e": "vitest run --config vitest.config.e2e.ts",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit"
   },
   "keywords": [],
   "author": "",
