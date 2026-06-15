@@ -1,5 +1,6 @@
 import { Customer } from '@prisma/client';
 import { CustomersRepository } from '../../repositories/customers-repository';
+import { ConflictError } from '../errors/conflict-error';
 
 interface CreateCustomerUseCaseRequest {
   name: string;
@@ -22,13 +23,13 @@ export class CreateCustomerUseCase {
     const customerWithSameEmail = await this.customersRepository.findByEmail(email);
 
     if (customerWithSameEmail) {
-      throw new Error('Customer with same email already exists.');
+      throw new ConflictError('Customer with same email already exists.');
     }
 
     const customerWithSameDocument = await this.customersRepository.findByDocument(document);
 
     if (customerWithSameDocument) {
-      throw new Error('Customer with same document already exists.');
+      throw new ConflictError('Customer with same document already exists.');
     }
 
     const customer = await this.customersRepository.create({
