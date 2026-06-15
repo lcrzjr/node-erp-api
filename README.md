@@ -1,10 +1,11 @@
-# Node.js ERP & POS API 🚀
+# Node.js ERP & POS API
 
 <div align="center">
   <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white" />
   <img alt="Fastify" src="https://img.shields.io/badge/Fastify-000000?style=for-the-badge&logo=fastify&logoColor=white" />
   <img alt="PostgreSQL" src="https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white" />
   <img alt="Prisma" src="https://img.shields.io/badge/Prisma-3982CE?style=for-the-badge&logo=Prisma&logoColor=white" />
+  <img alt="Vitest" src="https://img.shields.io/badge/Vitest-6E9F18?style=for-the-badge&logo=vitest&logoColor=white" />
 </div>
 
 <br/>
@@ -13,7 +14,7 @@
 
 > **English:** This project was developed to demonstrate the application of critical enterprise concepts (often seen in ERP systems built with Delphi/Java) within the modern Node.js ecosystem, focusing on data integrity and scalable architecture.
 
-## 🌟 Highlights & Features
+## Highlights & Features
 
 1. **ACID Transactions & Atomic Concurrency:** 
    - The core functionality (`CreateOrderUseCase`) demonstrates database transactions. When an order is placed, the product stock is deducted within the same transaction using atomic `updateMany` operations to prevent race conditions, guaranteeing data integrity just like critical POS/ERP systems. It also aggregates duplicate items dynamically.
@@ -30,7 +31,7 @@
 6. **Centralized Error Handling:**
    - Custom Domain Errors (e.g., `ResourceNotFoundError`, `ConflictError`, `InsufficientStockError`) intercepted by a global Fastify error handler, returning standardized HTTP responses.
 
-## 🛠️ Technologies
+## Technologies
 
 - **Node.js** + **TypeScript**
 - **Fastify** (High-performance web framework)
@@ -38,7 +39,7 @@
 - **Prisma** (Next-generation ORM)
 - **Zod** (Schema validation)
 
-## 🚀 How to Run
+## How to Run
 
 1. Clone this repository.
 2. Ensure you have **Docker** and **Docker Compose** installed.
@@ -61,7 +62,7 @@
 
 The API will be available at `http://localhost:3333`.
 
-## 📂 Project Structure
+## Project Structure
 
 ```text
 src/
@@ -74,7 +75,7 @@ src/
  └── usecases/         # Core business logic and rules
 ```
 
-## 🛣️ API Endpoints
+## API Endpoints
 
 Below are the main routes available in the system:
 
