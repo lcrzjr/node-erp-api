@@ -1,5 +1,6 @@
 import { Customer } from '@prisma/client';
 import { CustomersRepository } from '../../repositories/customers-repository';
+import { ResourceNotFoundError } from '../errors/resource-not-found-error';
 
 interface GetCustomerUseCaseRequest {
   id: string;
@@ -16,7 +17,7 @@ export class GetCustomerUseCase {
     const customer = await this.customersRepository.findById(id);
 
     if (!customer) {
-      throw new Error('Customer not found.');
+      throw new ResourceNotFoundError('Customer not found.');
     }
 
     return {

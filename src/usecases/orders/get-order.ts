@@ -1,5 +1,6 @@
 import { Order } from '@prisma/client';
 import { OrdersRepository } from '../../repositories/orders-repository';
+import { ResourceNotFoundError } from '../errors/resource-not-found-error';
 
 interface GetOrderUseCaseRequest {
   id: string;
@@ -16,7 +17,7 @@ export class GetOrderUseCase {
     const order = await this.ordersRepository.findById(id);
 
     if (!order) {
-      throw new Error('Order not found.');
+      throw new ResourceNotFoundError('Order not found.');
     }
 
     return {
