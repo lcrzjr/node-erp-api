@@ -13,16 +13,9 @@ export async function getOrder(request: FastifyRequest, reply: FastifyReply) {
   const ordersRepository = new PrismaOrdersRepository();
   const getOrderUseCase = new GetOrderUseCase(ordersRepository);
 
-  try {
-    const { order } = await getOrderUseCase.execute({
-      id,
-    });
+  const { order } = await getOrderUseCase.execute({
+    id,
+  });
 
-    return reply.status(200).send({ order });
-  } catch (error) {
-    if (error instanceof Error) {
-      return reply.status(404).send({ message: error.message });
-    }
-    throw error;
-  }
+  return reply.status(200).send({ order });
 }

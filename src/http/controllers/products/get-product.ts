@@ -13,16 +13,9 @@ export async function getProduct(request: FastifyRequest, reply: FastifyReply) {
   const productsRepository = new PrismaProductsRepository();
   const getProductUseCase = new GetProductUseCase(productsRepository);
 
-  try {
-    const { product } = await getProductUseCase.execute({
-      id,
-    });
+  const { product } = await getProductUseCase.execute({
+    id,
+  });
 
-    return reply.status(200).send({ product });
-  } catch (error) {
-    if (error instanceof Error) {
-      return reply.status(404).send({ message: error.message });
-    }
-    throw error;
-  }
+  return reply.status(200).send({ product });
 }

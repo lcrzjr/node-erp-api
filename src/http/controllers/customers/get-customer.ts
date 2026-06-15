@@ -13,16 +13,9 @@ export async function getCustomer(request: FastifyRequest, reply: FastifyReply) 
   const customersRepository = new PrismaCustomersRepository();
   const getCustomerUseCase = new GetCustomerUseCase(customersRepository);
 
-  try {
-    const { customer } = await getCustomerUseCase.execute({
-      id,
-    });
+  const { customer } = await getCustomerUseCase.execute({
+    id,
+  });
 
-    return reply.status(200).send({ customer });
-  } catch (error) {
-    if (error instanceof Error) {
-      return reply.status(404).send({ message: error.message });
-    }
-    throw error;
-  }
+  return reply.status(200).send({ customer });
 }

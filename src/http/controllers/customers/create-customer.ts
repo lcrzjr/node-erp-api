@@ -15,18 +15,11 @@ export async function createCustomer(request: FastifyRequest, reply: FastifyRepl
   const customersRepository = new PrismaCustomersRepository();
   const createCustomerUseCase = new CreateCustomerUseCase(customersRepository);
 
-  try {
-    const { customer } = await createCustomerUseCase.execute({
-      name,
-      email,
-      document,
-    });
+  const { customer } = await createCustomerUseCase.execute({
+    name,
+    email,
+    document,
+  });
 
-    return reply.status(201).send({ customer });
-  } catch (error) {
-    if (error instanceof Error) {
-      return reply.status(409).send({ message: error.message });
-    }
-    throw error;
-  }
+  return reply.status(201).send({ customer });
 }
