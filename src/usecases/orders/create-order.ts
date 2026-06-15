@@ -26,7 +26,21 @@ export class CreateOrderUseCase {
       throw new Error('Order must have at least one item.');
     }
 
-    const order = await this.ordersRepository.createWithTransaction(customerId, items);
+    const aggregatedItemsMap = new Map<string, number>();
+
+    for (const item of items) {
+      const currentQty = aggregatedItemsMap.get(item.productId) || 0;
+      aggregatedItemsMap.set(item.productId, currentQty + item.quantity);
+    }
+
+    const aggregatedItems = Array.from(aggregatedItemsMap.entries()).map(
+      ([productId, quantity]) => ({
+        productId,
+        quantity,
+      })
+    );
+
+    const order = await this.ordersRepository.createWithTransaction(customerId, aggregatedItems);
 
     return {
       order,

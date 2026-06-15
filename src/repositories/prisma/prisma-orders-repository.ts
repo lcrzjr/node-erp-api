@@ -1,11 +1,14 @@
+import { Prisma } from '@prisma/client';
 import { prisma } from '../../lib/prisma';
 import { OrderItemInput, OrdersRepository } from '../orders-repository';
+import { ResourceNotFoundError } from '../../usecases/errors/resource-not-found-error';
+import { InsufficientStockError } from '../../usecases/errors/insufficient-stock-error';
 
 export class PrismaOrdersRepository implements OrdersRepository {
   async createWithTransaction(customerId: string, items: OrderItemInput[]) {
     // We use Prisma $transaction to ensure everything succeeds or fails together
     return prisma.$transaction(async (tx) => {
-      let totalAmount = 0;
+      let totalAmount = new Prisma.Decimal(0);
 
       const productsInfo = await Promise.all(
         items.map(async (item) => {
@@ -14,24 +17,26 @@ export class PrismaOrdersRepository implements OrdersRepository {
           });
 
           if (!product) {
-            throw new Error(`Product with ID ${item.productId} not found.`);
-          }
-
-          if (product.stockQuantity < item.quantity) {
-            throw new Error(`Insufficient stock for product ${product.name}.`);
+            throw new ResourceNotFoundError(`Product with ID ${item.productId} not found.`);
           }
 
           return {
             ...item,
             unitPrice: product.price,
+            name: product.name,
           };
         })
       );
 
-      // 2. Deduct stock
+      // 2. Deduct stock atomically
       for (const item of productsInfo) {
-        await tx.product.update({
-          where: { id: item.productId },
+        const updateResult = await tx.product.updateMany({
+          where: {
+            id: item.productId,
+            stockQuantity: {
+              gte: item.quantity,
+            },
+          },
           data: {
             stockQuantity: {
               decrement: item.quantity,
@@ -39,7 +44,12 @@ export class PrismaOrdersRepository implements OrdersRepository {
           },
         });
 
-        totalAmount += Number(item.unitPrice) * item.quantity;
+        if (updateResult.count === 0) {
+          throw new InsufficientStockError(`Insufficient stock for product ${item.name}.`);
+        }
+
+        const itemTotal = item.unitPrice.mul(item.quantity);
+        totalAmount = totalAmount.add(itemTotal);
       }
 
       // 3. Create the order with its items
