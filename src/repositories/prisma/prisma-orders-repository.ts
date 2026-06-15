@@ -8,6 +8,14 @@ export class PrismaOrdersRepository implements OrdersRepository {
   async createWithTransaction(customerId: string, items: OrderItemInput[]) {
     // We use Prisma $transaction to ensure everything succeeds or fails together
     return prisma.$transaction(async (tx) => {
+      const customer = await tx.customer.findUnique({
+        where: { id: customerId },
+      });
+
+      if (!customer) {
+        throw new ResourceNotFoundError(`Customer with ID ${customerId} not found.`);
+      }
+
       let totalAmount = new Prisma.Decimal(0);
 
       const productsInfo = await Promise.all(

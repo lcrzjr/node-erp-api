@@ -2,6 +2,7 @@ import { Order, OrderItem, Prisma } from '@prisma/client';
 import { OrderItemInput, OrdersRepository } from '../orders-repository';
 import { randomUUID } from 'crypto';
 import { InMemoryProductsRepository } from './in-memory-products-repository';
+import { InMemoryCustomersRepository } from './in-memory-customers-repository';
 import { ResourceNotFoundError } from '../../usecases/errors/resource-not-found-error';
 import { InsufficientStockError } from '../../usecases/errors/insufficient-stock-error';
 
@@ -9,9 +10,16 @@ export class InMemoryOrdersRepository implements OrdersRepository {
   public items: Order[] = [];
   public orderItems: OrderItem[] = [];
 
-  constructor(private productsRepository: InMemoryProductsRepository) {}
+  constructor(
+    private productsRepository: InMemoryProductsRepository,
+    private customersRepository: InMemoryCustomersRepository
+  ) {}
 
   async createWithTransaction(customerId: string, inputItems: OrderItemInput[]) {
+    const customer = await this.customersRepository.findById(customerId);
+    if (!customer) {
+      throw new ResourceNotFoundError(`Customer with ID ${customerId} not found.`);
+    }
     let totalAmount = new Prisma.Decimal(0);
 
     const productsInfo = await Promise.all(
@@ -30,18 +38,23 @@ export class InMemoryOrdersRepository implements OrdersRepository {
       })
     );
 
-    // 2. Deduct stock and simulate atomicity
+    // 2. Phase 1: Deduct stock check (simulate atomicity)
     for (const item of productsInfo) {
       const productIndex = this.productsRepository.items.findIndex(
         (p) => p.id === item.productId
       );
-
       const product = this.productsRepository.items[productIndex];
 
       if (product.stockQuantity < item.quantity) {
         throw new InsufficientStockError(`Insufficient stock for product ${item.name}.`);
       }
+    }
 
+    // 3. Phase 2: Apply mutations
+    for (const item of productsInfo) {
+      const productIndex = this.productsRepository.items.findIndex(
+        (p) => p.id === item.productId
+      );
       this.productsRepository.items[productIndex].stockQuantity -= item.quantity;
 
       const itemTotal = item.unitPrice.mul(item.quantity);
