@@ -15,14 +15,20 @@
 
 ## 🌟 Highlights & Features
 
-1. **ACID Transactions (Inventory & Sales):** 
-   - The core functionality (`CreateOrderUseCase`) demonstrates database transactions. When an order is placed, the product stock is deducted within the same transaction. If any step fails, the database performs a `rollback`, guaranteeing data integrity just like critical POS/ERP systems.
-2. **Clean Architecture & SOLID:** 
+1. **ACID Transactions & Atomic Concurrency:** 
+   - The core functionality (`CreateOrderUseCase`) demonstrates database transactions. When an order is placed, the product stock is deducted within the same transaction using atomic `updateMany` operations to prevent race conditions, guaranteeing data integrity just like critical POS/ERP systems. It also aggregates duplicate items dynamically.
+2. **Precision Calculations:**
+   - Financial calculations strictly use `Prisma.Decimal` end-to-end to prevent float-point rounding errors common in JavaScript `Number`.
+3. **Testing (Unit & E2E):**
+   - **Vitest** configured as the main test runner.
+   - Comprehensive **Unit Tests** utilizing the In-Memory Repository pattern.
+   - **Integration (E2E) Tests** using **Testcontainers** to dynamically provision isolated PostgreSQL databases for testing real database constraints.
+4. **Clean Architecture & SOLID:** 
    - Implemented the **Repository Pattern** and **Use Cases**. The business logic is completely isolated from the database (Prisma) and the web framework (Fastify).
-3. **Strict Validation:** 
+5. **Strict Validation:** 
    - All incoming HTTP requests are strictly validated using **Zod** before reaching the controllers.
-4. **Centralized Error Handling:**
-   - Global error handler that intercepts domain errors and validation errors, returning standardized HTTP responses (e.g., 400 Bad Request, 409 Conflict).
+6. **Centralized Error Handling:**
+   - Custom Domain Errors (e.g., `ResourceNotFoundError`, `ConflictError`, `InsufficientStockError`) intercepted by a global Fastify error handler, returning standardized HTTP responses.
 
 ## 🛠️ Technologies
 
